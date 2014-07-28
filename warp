@@ -2,7 +2,7 @@
 
 warp() {
   # ensure SOURCE file exists
-  local SOURCE="$HOME/.warp"
+  local SOURCE="$HOME/.ssh/config"
   if [ ! -f "$SOURCE" ]; then
     echo "$SOURCE does not exist..."
     return 1
@@ -15,12 +15,13 @@ warp() {
   fi
 
   # make a selection, with vim
-  cat "$SOURCE" | vim -c "setlocal noreadonly" \
-                      -c "setlocal cursorline" \
-                      -c "setlocal number" \
-                      -c "nnoremap <buffer> <CR> V:w! ~/.picked<CR>:qa!<CR>" \
-                      -c "vnoremap <buffer> <CR>  :w! ~/.picked<CR>:qa!<CR>" \
-                      -R -
+  cat "$SOURCE" | grep "^host" | awk '{ print $2 }'| \
+      vim -c "setlocal noreadonly" \
+          -c "setlocal cursorline" \
+          -c "setlocal number" \
+          -c "nnoremap <buffer> <CR> V:w! ~/.picked<CR>:qa!<CR>" \
+          -c "vnoremap <buffer> <CR>  :w! ~/.picked<CR>:qa!<CR>" \
+          -R -
   # nothing was selected, abort
   if [ ! -e "$TARGET" ]; then
     return
